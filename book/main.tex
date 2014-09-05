@@ -1,7 +1,17 @@
-\documentclass[11pt,a4paper]{book}
+\documentclass[12pt,a4paper]{book}
+\usepackage{emptypage}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{listings}
 \usepackage{xepersian}
-\settextfont{XB Zar}
+\settextfont{XB Niloofar}
+\lstset{
+ language=Prolog,
+ frame=single
+}
 \begin{document}
 \include{preamble}
-\include{chapter1}
+\pagenumbering{arabic}
+\include{chapter-1}
+\include{chapter-2}
 \end{document}
