@@ -9,7 +9,7 @@
 پایگاه داده ۱ مجموعه ای از حقایق است. حقایق برای نمایش مواردی بکار می‌روند که بدون قید و شرط درست هستند. به عنوان مثال در اینجا گفته ایم که Mia و Judy و Yolanda زن هستند و Judy نوازنده گیتار است و مهمانی برقرار.
 
 \begin{latin}
-\begin{lstlisting}[title=KB1.pl]
+\begin{lstlisting}[title=KB1]
 womain(mia).
 woman(judy).
 woman(yolanda).
@@ -140,3 +140,78 @@ playsAirGuitar \\
 نکته آخر اینکه می‌توانیم به حقایق به صورت قواعدی نگاه کنیم که بدنه آنها تهی است. بنابراین به انتفاع مقدم، حقایق درست هستند.
 
 \subsection{\lr{Knowledge Base 3}}
+پایگاه داده بعدی شامل پنج clause است، دو حقیقت و یک قاعده:
+
+\begin{latin}
+\begin{lstlisting}[title=KB3]
+happy(vincent).
+listens2Music(butch).
+playsAirGuitar(vincent):-
+  listens2Music(vincent),
+  happy(vincent).
+playsAirGuitar(butch):-
+  happy(butch).
+playsAirGuitar(butch):-
+  listens2Music(butch).
+\end{lstlisting}
+\end{latin}
+
+در پایگاه KB3 سه predicate هم نام KB2 تعریف شده‌اند (happy ،listen2Music و playsAirGuitar) تنها تفاوت در تعریف آنهاست و این تعاریف دارای نکاتی است که در اینجا به آنها می‌پردازیم. قاعده
+
+\begin{latin}
+\begin{lstlisting}
+playsAirGuitar(vincent):-
+  listens2Music(vincent),
+  happy(vincent).
+\end{lstlisting}
+\end{latin}
+
+در بدنه خود دو بخش یا goal دارد که با یک comma از یکدیگر جدا شده‌اند. در واقع این comma در زبان پرولوگ نشان دهنده عطف منطقی است. بنابراین این قاعده به معنی این است که: «Vincent گیتار می‌نوازد اگر او به موسیقی گوش دهد و شاد باشد».
+
+با این وصف، اگر از پرولوگ بپرسیم:
+
+\begin{latin}
+\begin{lstlisting}
+?- playsAirGuitar(vincent).
+\end{lstlisting}
+\end{latin}
+
+پاسخ منفی خواهد بود. زیرا اگرچه KB3 شامل \متن‌لاتین{happy(vincent)} است، اما اطلاعی در مورد \متن‌لاتین{listens2Music(vincent)} چه مستقیم و چه غیر مستقیم به ما نمی‌دهد. به همین دلیل تنها یکی از شروط قاعده بالا برقرار است و پرولوگ به درستی پاسخ منفی می‌دهد.
+
+نکته بعدی مربوط به دو قاعده با head یکسان است که در KB3 تعریف شده‌اند:
+
+\begin{latin}
+\begin{lstlisting}
+playsAirGuitar(butch):-
+  happy(butch).
+playsAirGuitar(butch):-
+  listens2Music(butch).
+\end{lstlisting}
+\end{latin}
+
+می‌توان این دو قاعده را اینطور معنا کرد: «Butch گیتار می‌نوازد اگر خوشحال باشد یا به موسیقی گوش‌ دهد». پس برای نشان دادن یا منطقی در پرولوگ قواعدی با head یکسان تعریف می‌کنیم.
+
+می‌توانید حدس بزنید که اگر از پرولوگ بپرسیم:
+
+\begin{latin}
+\begin{lstlisting}
+?- playsAirGuitar(butch).
+\end{lstlisting}
+\end{latin}
+
+پاسخ مثبت است. زیرا اگرچه اولین قاعده به کار نمی‌آید (\متن‌لاتین{happy(butch)} در پایگاه داده نیست) اما به کمک دومین قاعده و استفاده از وضع مقدم پرولوگ پاسخ صحیح مثبت را چاپ می‌کند.
+
+راه دیگری برای تعریف یا منطقی در پرولوگ وجود دارد. قاعده زیر درست همانند دو قاعده بالا هستند.
+
+\begin{latin}
+\begin{lstlisting}
+playsAirGuitar(butch):-
+  happy(butch);
+  listens2Music(butch).
+\end{lstlisting}
+\end{latin}
+
+به وجود semicolon دقت کنید. semicolon در پرولوگ به معنی یا منطقی است. ممکن است این سوال پیش بیاید که آیا بهتر است از چند قاعده برای تعریف یا استفاده کنیم یا از یک قاعده. استفاده از دو قاعده باعث خوانایی بیشتر برنامه می‌شود. اما استفاده از یک قاعده از لحاظ اجرایی کاراتر است زیرا پرولوگ با یک قاعده سر و کار دارد.
+
+دانستیم که «\متن‌سیاه{\متن‌لاتین{:-}}» نشان‌دهنده نتیجه گیری و «\متن‌سیاه{\متن‌لاتین{,}}» نماد عطف منطقی و «\متن‌سیاه{\متن‌لاتین{;}}» نماد یا منطقی است.(اگر در مورد عملگر نفی منطقی بپرسید باید گفت اینکار پیچیده‌تر است و در فصول بعد بدان خواهیم پرداخت.) بعلاوه کاربرد قاعده منطقی استنتاج وضع مقدم را هم بارها از ابتدای این فصل دیده‌ایم. حالا درک می‌کنیم که چرا پرولوگ مخفف \متن‌لاتین{Programming in Logic} است.
+
