@@ -1,5 +1,4 @@
 \chapter{حقایق، قواعد و پرسش}
-\clearpage
 \section{چند مثال ساده}
 در پرولوگ تنها سه ساختار وجود دارد: حقایق\پانوشت{Facts}، قواعد\پانوشت{Rules} و پرسش‌ها\پانوشت{Queries}. مجموعه قواعد و حقایق با نام پایگاه دانش\پانوشت{\متن‌لاتین{Knowledge base}} یا پایگاه داده\پانوشت{\متن‌لاتین{Database}} شناخته می‌شوند. برنامه نویسی به زبان پرولوگ به معنی ساختن یک پایگاه داده است که در آن حقایق و قواعد مرتبط با مسئله مورد نظر ما درج شده‌اند. بدین ترتیب استفاده از این برنامه به صورت پرسش میسر است. یعنی ورودی برنامه پرسشی در مورد اطلاعات موجود در پایگاه داده است.
 
@@ -282,7 +281,7 @@ X = yolanda
 
 اگر به یاد داشته باشید \متن‌لاتین{,} به معنی عطف است. پس این پرسش می‌گوید که آیا هیچ X ای وجود دارد که Marsellus او را دوست داشته باشد و X زن باشد؟ با نگاهی به پایگاه KB4 می‌بینیم که پاسخ باید مثبت باشد چون Mia یک زن است و Marsellus او را دوست دارد. پرولوگ این پاسخ را می‌یابد و آن را اعلام می‌کند. اینکه چطور پرولوگ می‌تواند این کار را انجام دهد به فصل‌های بعدی موکول می‌شود.
 
-پروسه متحد کردن متغیرها با اطلاعات موجود در پایگاه داده قلب پرولوگ است. ایده‌های جالب و گوناگونی در پرولوگ وجود دارد اما در انتها همه آنها به unification ختم می‌شوند.
+پروسه متحد کردن متغیرها با اطلاعات موجود در پایگاه داده قلب پرولوگ است. ایده‌های جالب و گوناگونی در پرولوگ وجود دارد اما در انتها همه آنها به unification ختم می‌شوند.\\
 
 \subsection{\lr{Knowledge Base 5}}
 تا اینجا متغیرها را معرفی کرده و از آنها در پرسش‌ها استفاده کردیم. می‌توان از متغیرها در پایگاه داده نیز استفاده کرد:
@@ -355,7 +354,7 @@ W = vincent
 
 قبلاً در حین بررسی پایگاه‌های KB1 تا KB5 بسیاری از ترم‌های مرکب را دیده‌ایم. برای مثال \متن‌لاتین{playsAirGuitar(jody)} یک ترم مرکب است: functor آن playsAirGuitar  است و تک آرگومان آن jody است. مثال دیگر می‌تواند \متن‌لاتین{ loves(vincent,mia)} باشد که در آن loves عملگر و vincent و mia دو آرگومان آن هستند. \متن‌لاتین{jealous(marsellus,W)} نیز یک ترم مرکب است که یک متغیر در آرگومان‌های آن قرار دارد.
 
-تعریف بالا اجازه می‌دهد که ترم‌های پیچیده‌تری بسازیم. در واقع می‌توانیم ترم‌های مرکب را داخل یکدیگر جای دهیم\پانوشت{به اینکار nesting گفته می‌شود}. برای مثال\\ \متن‌لاتین{hide(X,father(father(father(butch))))}\\ یک ترم مرکب است. functor آن hide و دو آرگومان آن یکی متغیر X و دیگری ترم مرکب \متن‌لاتین{father(father(father(butch)))} است. به همین ترتیب ترم‌های مرکب داخل هم ترکیب شده‌اند تا جایی که به \متن‌لاتین{father(butch)} می‌رسیم که آرگومان آن ثابت butch هست.
+تعریف بالا اجازه می‌دهد که ترم‌های پیچیده‌تری بسازیم. در واقع می‌توانیم ترم‌های مرکب را داخل یکدیگر جای دهیم\پانوشت{به اینکار nesting گفته می‌شود}. برای مثال \متن‌لاتین{hide(X,father(father(father(butch))))} یک ترم مرکب است. functor آن hide و دو آرگومان آن یکی متغیر X و دیگری ترم مرکب \\\متن‌لاتین{father(father(father(butch)))} است. به همین ترتیب ترم‌های مرکب داخل هم ترکیب شده‌اند تا جایی که به \متن‌لاتین{father(butch)} می‌رسیم که آرگومان آن ثابت butch هست.
 
 به تعداد آرگومان‌های یک ترم مرکب arity گفته می‌شود. مثلاً \متن‌لاتین{womain(mia)} یک ترم پیچیده با arity یک است و \متن‌لاتین{loves(vincent,mia)} دارای arity دو است.
 
@@ -381,4 +380,150 @@ playsAirGuitar/1
 \end{lstlisting}
 \end{latin}
 
+\clearpage
+
 \section{تمرین‌ها}
+\begin{exercise}
+کدامیک از رشته‌ کاراکترهای زیر اتم، کدام‌ متغیر و کدام نه اتم و نه متغیر هستند؟\\
+\begin{latin}
+\begin{enumerate}
+\item vINCENT
+\item Footmassage
+\item variable23
+\item Variable2000
+\item big\_kahuna\_burger
+\item 'big  kahuna  burger'
+\item big  kahuna  burger
+\item 'Jules'
+\item \_Jules
+\item '\_Jules'
+\end{enumerate}
+\end{latin}
+\end{exercise}
+
+\begin{exercise}
+کدامیک از رشته کاراکترهای زیر اتم، متغیر، ترم مرکب اند و کدامیک ترم نیستند؟\\
+\begin{latin}
+\begin{enumerate}
+\item loves(Vincent,mia)
+\item 'loves(Vincent,mia)'
+\item boxer(Butch)
+\item and(big(burger),kahuna(burger))
+\item and(big(X),kahuna(X))
+\item \_and(big(X),kahuna(X))
+\item (Butch  kills  Vincent)
+\item kills(Butch  Vincent)
+\item kills(Butch,Vincent
+\end{enumerate}
+\end{latin}
+\end{exercise}
+
+\begin{exercise}
+در پایگاه داده زیر چند حقیقت، قاعده، clause و گزاره وجود دارند؟ قسمت head و goal هر قاعده را مشخص کنید.
+\begin{latin}
+\begin{lstlisting}
+woman(vincent). 
+woman(mia). 
+man(jules). 
+person(X) :- man(X); woman(X). 
+loves(X,Y) :- father(X,Y). 
+father(Y,Z) :- man(Y), son(Z,Y). 
+father(Y,Z) :- man(Y), daughter(Z,Y).
+\end{lstlisting}
+\end{latin}
+\end{exercise}
+
+\begin{exercise}
+گزاره های زیر را به زبان پرولوگ بنویسید.
+\begin{latin}
+\begin{enumerate}
+\item Butch is a killer.
+\item Mia and Marsellus are married.
+\item Zed is dead.
+\item Mia loves everyone who is a good signer.
+\item Jules eats anything that is nutritious or tasty.
+\end{enumerate}
+\end{latin}
+\end{exercise}
+
+\begin{exercise}
+فرض کنید که پایگاه داده زیر را در پرولوگ تعریف کرده‌ایم
+\begin{latin}
+\begin{lstlisting}
+wizard(ron). 
+hasWand(harry). 
+quidditchPlayer(harry). 
+wizard(X):-  hasBroom(X),  hasWand(X). 
+hasBroom(X):-  quidditchPlayer(X).
+\end{lstlisting}
+\end{latin}
+\noindent پاسخ پرولوگ به پرسش‌های زیر چیست؟
+\begin{latin}
+\begin{enumerate}
+\item wizard(ron).
+\item witch(ron).
+\item wizard(hermione).
+\item witch(hermione).
+\item wizard(harry).
+\item wizard(Y).
+\item witch(Y).
+\end{enumerate}
+\end{latin}
+\end{exercise}
+
+\clearpage
+
+\section{تمرین عملی}
+هدف از اولین تمرین عملی، آشنایی با نحوه اجرای برنامه‌های پرولوگ است. برای اجرای تمرین عملی باید کامپایلر و برنامه پرولوگ را روی سیستم خود نصب کنید. پیاده‌سازی های متفاوتی از پرولوگ وجود دارد. در این کتابچه ما از پیاده‌سازی \متن‌لاتین{SWI-Prolog} استفاده می‌کنیم. برای نصب SWI-Prolog روی سیستم کافی است به سایت swi-prolog.org\پانوشت{http://www.swi-prolog.org/download/stable} مراجعه کنید و فایل نصاب متناسب با سیستم عامل خود را دریافت کرده و آن را اجرا نمایید.
+
+برای شروع کار پایگاه داده KB2 را در فایلی با نام \متن‌لاتین{kb2.pl} قرار دهید. سپس در ترمینال به مسیری که فایل خود را ذخیره کرده‌اید رفته و دستور swipl را اجرا کنید. خواهید دید که پرولوگ منتظر اجرای فرامین شما خواهد بود.
+
+تا اینجای کار پرولوگ هیچ چیز در مورد KB2 نمی‌داند. برای اطمینان دستور \متن‌لاتین{.listing} را تایپ کرده و دکمه Enter را فشار دهید.
+
+\begin{latin}
+\begin{lstlisting}
+?- listing.
+true.
+\end{lstlisting}
+\end{latin}
+
+دستور listing یک دستور از پیش تعریف شده در پرولوگ است. این دستور به پرولوگ می‌گوید محتوای پایگاه داده جاری را چاپ کند. از آنجایی که هنوز پایگاه داده‌ای در پرولوگ بارگزاری نکرده‌ایم تنها پاسخ \متن‌لاتین{true.} را خواهیم دید. یعنی پرولوگ چیزی برای نمایش ندارد. (البته ممکن است اطلاعاتی راجع به محیط اجرا و متغیرهای داخلی پرولوگ برگردانده شود.)
+
+بیایید KB2 را به پرولوگ بشناسانیم! دستور زیر پایگاه داده را در پرولوگ بارگزاری خواهد کرد:
+
+\begin{latin}
+\begin{lstlisting}
+?- [kb2].
+% kb2 compiled 0.00 sec, 6 clauses
+true.
+\end{lstlisting}
+\end{latin}
+
+اگر دستور بالا پاسخی غیر از \متن‌لاتین{true.} داد مشکلی به وجود آمده است. در این حالت یا اشتباه تایپی در پایگاه داده وجود دارد یا فایل \متن‌لاتین{kb2.pl} در مسیر کنونی وجود ندارد. در این حالت باید از پرولوگ خارج شوید، مسیر را به جایی که فایل \متن‌لاتین{kb2.pl} را ذخیره کرده‌اید تغییر داده و دوباره swipl را اجرا کنید. برای خروج از پرولوگ از دستور \متن‌لاتین{halt.} زیر استفاده کنید. راه دیگری نیز وجود دارد. می‌توانید به جای خروج از پرولوگ، آدرس دقیق فایل پایگاه داده را به پرولوگ دهید:
+
+\begin{latin}
+\begin{lstlisting}
+?- ['c:/Documents and Settings/Morteza/prolog/snippets/kb2.pl'].
+% kb2 compiled 0.00 sec, 6 clauses
+true.
+\end{lstlisting}
+\end{latin}
+
+برای اطمینان از حصول نتیجه بار دیگر دستور \متن‌لاتین{listing.} را اجرا کنید و ببینید پرولوگ چه محتوایی را چاپ می‌کند.
+
+دستور \متن‌لاتین{listing} اشکال دیگری نیز دارد. مثلاً می‌توانید ببینید که چه گزاره هایی شامل \متن‌لاتین{playsAirGuitar} در پایگاه داده وجود دارند:
+
+\begin{latin}
+\begin{lstlisting}
+?- listing(playsAirGuitar).
+
+playsAirGuitar(mia):-
+  listens2Music(mia).
+playsAirGuitar(yolanda):-
+  listens2Music(yolanda).
+
+true.
+\end{lstlisting}
+\end{latin}
+
+حالا آماده‌اید تا از پرولوگ در مورد این پایگاه سوال بپرسید. این کار را با چند پایگاه داده معرفی شده در این فصل تکرار کنید و سعی کنید پرسش‌هایی که در طول فصل به آنها پرداختیم را امتحان کنید.

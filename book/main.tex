@@ -1,17 +1,28 @@
 \documentclass[12pt,a4paper]{book}
+\renewcommand{\baselinestretch}{1.5} 
 \usepackage{emptypage}
 \usepackage{fontspec}
 \usepackage{amsmath}
 \usepackage{listings}
+\usepackage{manfnt,mathabx}
 \usepackage{xepersian}
 \settextfont{XB Niloofar}
 \lstset{
+ basicstyle=\footnotesize\ttfamily,
  language=Prolog,
- frame=single
+ frame=single,
+ breaklines=true
 }
+\newcounter{exno}
+\outer\def\exercise{\medbreak
+ \begingroup
+  \refstepcounter{exno}
+  \noindent{\bfseries تمرین\thechapter$.$\theexno}}
+\def\endexercise{\endgroup}
+
 \begin{document}
 \include{preamble}
 \pagenumbering{arabic}
-\include{chapter-1}
+%\include{chapter-1}
 \include{chapter-2}
 \end{document}
