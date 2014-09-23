@@ -1,5 +1,8 @@
 \documentclass[12pt,a4paper]{book}
 \renewcommand{\baselinestretch}{1.5} 
+\usepackage{tikz}
+\usepackage{verbatim}
+\usetikzlibrary{shapes,positioning,arrows}
 \usepackage{emptypage}
 \usepackage{fontspec}
 \usepackage{amsmath}
@@ -10,7 +13,6 @@
 \lstset{
  basicstyle=\footnotesize\ttfamily,
  language=Prolog,
- frame=single,
  breaklines=true
 }
 \newcounter{exno}
@@ -25,4 +27,5 @@
 \pagenumbering{arabic}
 %\include{chapter-0}
 \include{chapter-1}
+\include{chapter-2}
 \end{document}
