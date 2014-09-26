@@ -436,21 +436,228 @@ g(b), h(b).
 
 به شکل بالا نگاه کنید. این شکل حالت درختی دارد. گره‌های درخت نشان‌دهنده goal هایی هستند که در این مرحله از جستجو باید برآورده شوند و یال‌ها نشان‌دهنده مقداردهی‌های صورت گرفته است. به این نوع درخت‌ها، درخت‌های جستجو گفته می‌شود. در این درخت، برگ‌هایی که دارای goal هستند، مسیرهایی هستند که به پاسخ نرسیده است و نشان می‌دهند در مراحل قبل پرولوگ انتخاب اشتباهی برای اتحاد انجام داده است. برگ‌هایی که خالی هستند، یک پاسخ صحیح را نشان می‌دهند. اطلاعاتی که روی یال‌ها در یک مسیر از ریشه به یک برگ خالی قرار دارند نشان‌دهنده نحوه مقداردهی متغیرها برای رسیدن به یک پاسخ درست است.
 
+\clearpage
+
 \section{تمرین‌ها}
 \begin{exercise}
-کدامیک از رشته‌ کاراکترهای زیر اتم، کدام‌ متغیر و کدام نه اتم و نه متغیر هستند؟\\
+کدام یک از ترم‌های زیر متحد می‌شوند؟ مقداردهی متغیرها را در صورت امکان اتحاد بنویسید.\\
 \begin{latin}
 \begin{enumerate}
-\item vINCENT
-\item Footmassage
-\item variable23
-\item Variable2000
-\item big\_kahuna\_burger
-\item 'big  kahuna  burger'
-\item big  kahuna  burger
-\item 'Jules'
-\item \_Jules
-\item '\_Jules'
+\item bread = bread
+\item 'Bread' = bread
+\item 'bread' = bread
+\item Bread = bread
+\item bread = sausage
+\item food(bread) = bread
+\item food(bread) = X
+\item food(X) = food(bread)
+\item food(bread,X) = food(Y,sausage)
+\item food(bread,X,beer) = food(Y,sausage,X)
+\item food(bread,X,beer) = food(Y,kahuna\_burger)
+\item food(X) = X
+\item meal(food(bread),drink(beer)) = meal(X,Y)
+\item meal(food(bread),X) = meal(X,drink(beer))
 \end{enumerate}
 \end{latin}
 \end{exercise}
+
+\begin{exercise}
+با توجه به پایگاه داده زیر به سوالات پاسخ دهید.\\
+\begin{latin}
+\begin{lstlisting}
+house_elf(dobby).
+witch(hermione).
+witch('McGonagall').
+witch(rita\_skeeter).
+magic(X):-house\_elf(X).
+magic(X):-wizard(X).
+magic(X):-witch(X).
+\end{lstlisting}
+\end{latin}
+کدامیک از پرسش‌های زیر پاسخ مثبت دارند؟ مقداردهی متغیرها برای آن‌ها را بنویسید.\\
+\begin{latin}
+\begin{enumerate}
+\item ?- magic(house\_elf).
+\item ?- wizard(harry).
+\item ?- magic(wizard).
+\item ?- magic('McGonagall').
+\item ?- magic(Hermione).
+\end{enumerate}
+\end{latin}
+
+درخت جستجو را برای پرسش شماره ۵ رسم کنید.
+\end{exercise}
+
+\begin{exercise}
+در پایگاه داده زیر یک فرهنگ لغت کوچک و یک گرامر که تنها از یک قاعده تشکیل شده، را مشاهده می‌کنید. این قاعده جملاتی را تعریف می‌کند که از پنج کلمه تشکیل شده‌اند: یک حرف تعریف، یک اسم، یک فعل، دوباره یک حرف تعریف و در آخر یک اسم.\\
+\begin{latin}
+\begin{lstlisting}
+word(article,a).
+word(article,every).
+word(noun,criminal).
+word(noun,'big kahuna burger').
+word(verb,eats).
+word(verb,likes).
+sentence(Word1,Word2,Word3,Word4,Word5) :-
+    word(article,Word1),
+    word(noun,Word2),
+    word(verb,Word3),
+    word(article,Word4),
+    word(noun,Word5).
+\end{lstlisting}
+\end{latin}
+چطور باید از پرولوگ پرسید که این گرامر با توجه فرهنگ لغت تعریف شده، چه جملاتی را تولید می‌کند؟ جملات را به ترتیبی که پرولوگ تولید خواهد کرد بنویسید.
+\end{exercise}
+\begin{exercise}
+می‌خواهیم شش کلمه انگلیسی زیر را در جدولی همانند شکل جایگذاری کنیم.\\
+\begin{latin}
+abalone, abandon, anagram, connect, elegant, enhance.\\
+
+\begin{tikzpicture}[align=center]
+\draw [scale=0.5,xshift=0cm, yshift=0cm] (0, 0) grid (1, 7) node [below] at (0.5cm,8cm) {$V1$};
+\draw [scale=0.5,xshift=2cm, yshift=0cm] (0, 0) grid (1, 7) node [below] at (0.5cm,8cm) {$V2$};
+\draw [scale=0.5,xshift=4cm, yshift=0cm] (0, 0) grid (1, 7) node [below] at (0.5cm,8cm) {$V3$};
+\draw [scale=0.5,xshift=-1cm,yshift=5cm] (0, 0) grid (7, 1) node [left] at (0cm,0.5cm) {$H1$};
+\draw [scale=0.5,xshift=-1cm,yshift=3cm] (0, 0) grid (7, 1) node [left] at (0cm,0.5cm) {$H2$};
+\draw [scale=0.5,xshift=-1cm,yshift=1cm] (0, 0) grid (7, 1) node [left] at (0cm,0.5cm) {$H3$};
+\end{tikzpicture}
+\end{latin}
+
+پایگاه داده زیر یک فرهنگ لغت شامل کلمات بالاست:
+
+\begin{latin}
+\begin{lstlisting}
+word(abalone,a,b,a,l,o,n,e).
+word(abandon,a,b,a,n,d,o,n).
+word(enhance,e,n,h,a,n,c,e).
+word(anagram,a,n,a,g,r,a,m).
+word(connect,c,o,n,n,e,c,t).
+word(elegant,e,l,e,g,a,n,t).
+\end{lstlisting}
+\end{latin}
+
+محمول \متن‌لاتین{crosswd/6} را که نحوه پر کردن جدول با این لغات را تعریف می‌کند، بنویسید بطوری که سه آرگومان اول کلماتی باشند که ستون‌ها را از چپ به راست پر می‌کنند و سه آرگومان دوم کلماتی باشند که سطر ها را از بالا به پایین پر می‌کنند.
+
+\end{exercise}
+
+\clearpage
+
+\section{تمرین عملی}
+
+تاکنون کار با پرولوگ را فرا گرفته‌اید. در این قسمت می‌خواهیم اتحاد و اثبات جستجو را تمرین کنیم.
+
+برای شروع برنامه پرولوگ خود را باز کنید تا خط فرمانی شبیه \متن‌لاتین{?-} را ببینید.
+
+حالا پاسخ‌های خود به پرسش \verb!2.1! را تصحیح کنید. به این صورت که توسط محمول \متن‌لاتین{=/2} سعی کنید ترم‌های موجود در صورت سوال را متحد کنید. برای مثال، دو ترم \متن‌لاتین{food(bread,X)} و \متن‌لاتین{food(Y,sausage)} را امتحان می‌کنیم:
+
+\begin{latin}
+\begin{lstlisting}
+?- food(bread,X) = food(Y,sausage).
+X = sausage, Y = bread.
+\end{lstlisting}
+\end{latin}
+
+همچنین ببینید چه اتفاقی می‌افتد اگر سعی کنید ترم‌هایی به شکل زیر را با هم متحد کنید:
+
+\begin{latin}
+\begin{lstlisting}
+g(X,Y) = Y.
+\end{lstlisting}
+\end{latin}
+
+وقت آن است که با یک محمول جدید از قبل تعریف شده در پرولوگ آشنا شویم، محمول  \verb!\=/2!. این محمول عکس محمول \متن‌لاتین{=/2} کار می‌کند: هنگامی پاسخ درست است که دو آرگومان آن متحد نشوند. مثلاً برای دو ترم a و b داریم:
+
+\begin{latin}
+\begin{lstlisting}
+?- a \= b.
+true.
+\end{lstlisting}
+\end{latin}
+
+سعی کنید با این محمول کار کنید و مثال‌های زیر را امتحان کنید. البته اینکار را بدین صورت انجام دهید که ابتدا فکر کنید پرولوگ چه پاسخی خواهد داد، سپس ترم‌ها را وارد کنید تا ببینید پاسخ ذهنی شما درست بوده‌است یا خیر.
+
+\begin{latin}
+\begin{enumerate}
+\item \verb!a \= a!
+\item \verb!'a' \= a!
+\item \verb!A \= a!
+\item \verb!f(a) \= a!
+\item \verb!f(a) \= A!
+\item \verb!f(A) \= f(a)!
+\item \verb!g(a,B,c) \= g(A,b,C)!
+\item \verb!g(a,b,c) \= g(A,C)!
+\item \verb!f(X) \= X!
+\end{enumerate}
+\end{latin}
+
+همانطور که متوجه شدید محمول \verb!\=/2!نقیض محمول \متن‌لاتین{=/2} است: یک query توسط \متن‌لاتین{=/2} ارضاء می‌شود هرگاه توسط \verb!\=/2! ارضاء‌ نشود.
+
+حال می‌خواهیم با یک محمول از پیش تعریف شده دیگر به اسم trace آشنا شویم. این محمول پرولوگ را مجبور می‌سازد که پردازش query ها را مرحله به مرحله انجام دهد و در هر مرحله نحوه اجرا را گزارش دهد. با اجرای هر مرحله پرولوگ منتظر می‌ماند تا شما با فشار دادن کلید enter دستور ادامه را صادر کنید. این دستور به عنوان یک ابزار برای عیب‌یابی\پانوشت{debugging} بکار می‌رود اما می‌توان از آن برای یادگیری نحوه کار جتسجوی اثبات در پرولوگ هم استفاده کرد.
+
+در این فصل دیدیم که جستجوی اثبات برای پرسش \متن‌لاتین{k(X)} با توجه به پایگاه داده زیر، چطور پیش می‌رود.
+
+\begin{latin}
+\begin{lstlisting}
+f(a).
+f(b).
+g(a).
+g(b).
+h(b).
+k(X) :- f(X),g(X),h(X).
+\end{lstlisting}
+\end{latin}
+
+این پایگاه داده را در فایلی با نام \متن‌لاتین{proof.pl} قرار دهید و آن را در پرولوگ بارگزاری کنید.
+
+\begin{latin}
+\begin{lstlisting}
+?- [proof].
+% proof compiled 0.00 sec, 6 clauses.
+true.
+\end{lstlisting}
+\end{latin}
+
+حال محمول «\متن‌لاتین{trace.}» را تایپ کرده و کلید enter را فشار دهید.
+
+\begin{latin}
+\begin{lstlisting}
+?- trace.
+true.
+[trace]  ?-
+\end{lstlisting}
+\end{latin}
+
+حالا پرولوگ در مد trace قرار دارد و تمام query ها را مرحله به مرحله مانند توضیحات بالا اجرا می‌کند. پرسش \متن‌لاتین{k(X).} را تایپ کنید و دکمه enter را فشار دهید. هر بار که با یک علامت سوال روبرو شدید دکمه enter را فشار دهید. با اینکار چیزی شبیه خروجی زیر مشاهده خواهید کرد:
+
+\begin{latin}
+\begin{lstlisting}
+[trace]  ?- k(X).
+   Call: (6) k(_G1412) ? creep
+   Call: (7) f(_G1412) ? creep
+   Exit: (7) f(a) ? creep
+   Call: (7) g(a) ? creep
+   Exit: (7) g(a) ? creep
+   Call: (7) h(a) ? creep
+   Fail: (7) h(a) ? creep
+   Redo: (7) f(_G1412) ? creep
+   Exit: (7) f(b) ? creep
+   Call: (7) g(b) ? creep
+   Exit: (7) g(b) ? creep
+   Call: (7) h(b) ? creep
+   Exit: (7) h(b) ? creep
+   Exit: (6) k(b) ? creep
+X = b.
+\end{lstlisting}
+\end{latin}
+
+این خروجی را بدقت بخوانید و سعی کنید ارتباط هر خط با نحوه کار جستجوی اثبات را دریابید. مثلاً در خط هشتم، Redo نشان‌دهنده backtrack است که در متن فصل به آن اشاره کردیم.
+
+برای یادگیری پرولوگ از trace زیاد استفاده کنید. اینکار به شما کمک می‌کند تا با نحوه کار پرولوگ بیشتر آشنا شوید. هرگاه دیگر نخواستید از trace استفاده کنید، دستور notrace را تایپ کنید تا پرولوگ از این حالت خارج شود:
+
+\begin{latin}
+\begin{lstlisting}
+[trace]  ?- notrace.
+true.
+?-
+\end{lstlisting}
+\end{latin}
