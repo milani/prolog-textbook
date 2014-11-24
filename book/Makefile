@@ -4,6 +4,7 @@ BUILDDIR = build/
 LATEX	= xelatex -output-directory=$(BUILDDIR) -interaction=nonstopmode
 BIBTEX	= bibtex
 MAKEINDEX = makeindex
+OPEN = evince
 
 RERUN = "(There were undefined references|Rerun to get (cross-references|the bars) right)"
 RERUNBIB = "No file.*\.bbl|Citation.*undefined"
@@ -44,6 +45,9 @@ $(TRG)	: %.pdf : %.tex $(DEP) $(PDFPICS) $(BIBFILE)
 
 clean	:
 	  -rm -f $(TRG) $(PSF) $(PDF) $(TRG:%.pdf=%.aux) $(TRG:%.pdf=%.bbl) $(TRG:%.pdf=%.blg) $(TRG:%.pdf=%.log) $(TRG:%.pdf=%.out)
+
+show	:
+	  @$(OPEN) $(TRG)
 
 .PHONY	: all clean ps pdf
 

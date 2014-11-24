@@ -1,0 +1,613 @@
+\chapter{بازگشت}
+
+\section{تعاریف بازگشتی}
+محمول‌ها می‌توانند به صورت بازگشتی تعریف شوند. به بیان ساده، اگر در تعریف یک محمول به خودش اشاره داشته باشیم یک تعریف بازگشتی داریم.
+
+\subsection{مثال ۱}
+پایگاه داده زیر را در نظر بگیرید:
+
+\begin{latin}
+\begin{lstlisting}
+is_digesting(X,Y) :- just_ate(X,Y).
+is_digesting(X,Y) :-
+  just_ate(X,Z),
+  is_digesting(Z,Y).
+
+just_ate(mosquito,blood(john)).
+just_ate(frog,mosquito).
+just_ate(stork,frog).
+\end{lstlisting}
+\end{latin}
+
+دو قاعده و دو حقیقت این پایگاه داده را تشکیل داده‌اند. با کمی دقت متوجه می‌شوید که تعریف محمول \متن‌لاتین{is\_digesting/2} بازگشتی است. یعنی در قاعده دوم، \متن‌لاتین{is\_digesting}، هم در سمت راست و هم در سمت چپ بکار رفته است. با این حال یک راه فرار از این دور بازگشتی وجود دارد و آن محمول \متن‌لاتین{just\_ate} است که در تعریف هر دو قاعده وجود دارد. بیایید این قواعد را از نظر معنی \متن‌لاتین{(declarative meaning)}و عملکرد \متن‌لاتین{(procedural meaning)} بررسی کنیم.
+
+کلمه \متن‌لاتین{declarative} برای صحبت در مورد مفهوم منطقی پایگاه‌های داده در پرولوگ بکار می‌رود. در مثال بالا مفهوم منطقی تعریف بازگشتی به سادگی قابل فهم است. \متن‌لاتین{clause} اول این تعریف (قاعده اول. در اصطلاح \متن‌لاتین{escape clause}، یا \متن‌لاتین{base clause})، می‌گوید: اگر X به تازگی Y را خورده است، پس X اکنون در حال هضم Y است.
+
+\متن‌لاتین{clause} دوم یا \متن‌لاتین{recursive clause} می‌گوید: اگر X به تازگی Z را خورده است و Z در حال هضم Y است، پس X در حال هضم Y است.
+
+حالا می‌دانیم که معنی تعریف بازگشتی بالا چیست اما اگر از پرولوگ سوالی در این رابطه به پرسیم چه اتفاقی می‌افتد و عملکرد پرولوگ در پاسخ به این سوال چگونه خواهد بود؟ در واقع معنی عملکردی یا \متن‌لاتین{procedural meaning} این تعریف چیست؟
+
+قاعده اول یا همان clause پایه، مانند تمام قاعده‌هایی است که تا به حال دیده‌ایم. اما در مورد clause بازگشتی، این clause به پرولوگ امکان می‌دهد که برای X و Y، بررسی کند که آیا Z ای وجود دارد که X به تازگی Z را خورده باشد و Z در حال هضم Y بوده باشد. پاسخ این دو پرسش ساده‌تر نیز از طریق حقایق موجود در پایگاه داده به راحتی قابل بازیابی است. حال ببینیم که روند اجرا برای پرسش زیر چگونه است:
+
+\begin{latin}
+\begin{lstlisting}
+?- is_digesting(stork,mosquito).
+\end{lstlisting}
+\end{latin}
+
+طبق روال، پرولوگ از اولین قاعده مرتبط با is\_digesting استفاده می‌کند که در اینجا clause پایه تعریف بازگشتی است: X در حال هضم Y است اگر X به تازگی Y را خورده باشد. با متحد کردن X با stork و Y با mosquito به goal زیر می‌رسیم:
+
+\begin{latin}
+\begin{lstlisting}
+just_ate(stork,mosquito).
+\end{lstlisting}
+\end{latin}
+
+اما در پایگاه داده اطلاعاتی در ارتباط با اینکه لک لک پشه را خورده باشد وجود ندارد. بنابراین پرولوگ سعی می‌کند از قاعده دوم استفاده کند. با اتحاد X و stork‌ و Y و mosquito به goal های زیر می‌رسیم:
+
+\begin{latin}
+\begin{lstlisting}
+just_ate(stork,Z),
+is_digesting(Z,mosquito).
+\end{lstlisting}
+\end{latin}
+
+با اتحاد Z و frog، پرولوگ می‌تواند goal ها را ارضاء کند:
+
+\begin{latin}
+\begin{lstlisting}
+just_ate(stork,frog).
+\end{lstlisting}
+\end{latin}
+
+این حقیقت در پایگاه داده وجود دارد. پس لیست goal ها به شکل زیر در می‌آید.
+
+\begin{latin}
+\begin{lstlisting}
+is_digesting(frog,mosquito).
+\end{lstlisting}
+\end{latin}
+
+با بکارگیری clause‌ پایه \متن‌لاتین{is\_digesting/2} خواهیم داشت:
+
+\begin{latin}
+\begin{lstlisting}
+just_ate(frog,mosquito).
+\end{lstlisting}
+\end{latin}
+
+که این حقیقت در پایگاه داده وجود دارد. پس هر دو goal ارضاء شدند.
+
+ذکر یک نکته در اینجا ضروری است. هنگامی که یک محمول بازگشتی تعریف می‌کنیم، تعریف حداقل باید شامل دو clause باشد: یک clause پایه (که حلقه بازگشتی را در یک نقطه متوقف کند) و یک clause که شامل حلقه بازگشت باشد. یک مثال ساده تعریف اشتباه حلقه بازگشتی به صورت زیر است:
+
+\begin{latin}
+\begin{lstlisting}
+p :- p.
+\end{lstlisting}
+\end{latin}
+
+از نگاه مفهومی یا declarative، قاعده بالا کاملاً معنی دار است: p درست است اگر p‌ درست باشد. اما از نظر روند اجرا یا \متن‌لاتین{procedural meaning}، با یک قاعده خطرناک روبرو هستیم. هیچ راهی برای خروج از حلقه بازگشتی وجود ندارد.
+
+\subsection{مثال ۲}
+حال که با مفهوم تعریف بازگشتی آشنا شدیم، خوب است که بدانیم چرا تعریف بازگشتی در پرولوگ اهمیت دارد. البته پاسخ را می‌توان در چند سطح بررسی کرد اما در اینجا می‌خواهیم از دید کاربردی به مسئله نگاه کنیم.
+
+فرض کنید می‌خواهیم یک پایگاه داده از روابط فرزندی داشته باشیم.
+
+\begin{latin}
+\begin{lstlisting}
+child(charlotte,caroline).
+child(caroline,laura).
+\end{lstlisting}
+\end{latin}
+
+که در اینجا Caroline فرزند Charlotte و Laura فرزند Caroline است. حال فرض کنید بخواهیم رابطه اولادی را تعریف کنیم، یعنی رابطه فرزند بودن، فرزندِ فرزند بودن، فرزندِ  فرزندِ  فرزندِبودن و ... . اولین راه اضافه کردن دو قاعده غیر بازگشتی مشابه زیر به پایگاه داده است:
+
+\begin{latin}
+\begin{lstlisting}
+descend(X,Y) :- child(X,Y).
+descend(X,Y) :- child(X,Z),
+                child(Z,Y).
+\end{lstlisting}
+\end{latin}
+
+این دو قاعده هرچند تا حدودی کارا هستند ولی به شدت محدوداند. این دو قاعده تنها قادراند رابطه اولادی را برای حداکثر دو نسل نشان دهند. بنابراین اگر به پایگاه داده، حقایق زیر را بیافزاییم
+
+\begin{latin}
+\begin{lstlisting}
+child(martha,charlotte).
+child(charlotte,caroline).
+child(caroline,laura).
+child(laura,rose).
+\end{lstlisting}
+\end{latin}
+
+دیگر قواعد descend نمی‌توانند پاسخگوی نیاز ما باشند:
+
+\begin{latin}
+\begin{lstlisting}
+?- descend(martha,laura).
+\end{lstlisting}
+\end{latin}
+
+این پرسش، پاسخ NO را به همراه دارد که پاسخی اشتباه است. بازهم می‌توانیم این مشکل را به سادگی با اضافه کردن قواعد زیر حل کنیم:
+
+\begin{latin}
+\begin{lstlisting}
+descend(X,Y) :- child(X,Z_1),
+                child(Z_1,Z_2),
+                child(Z_2,Y).
+
+descend(X,Y) :- child(X,Z_1),
+                child(Z_1,Z_2),
+                child(Z_2,Z_3),
+                child(Z_3,Y).
+\end{lstlisting}
+\end{latin}
+
+ولی اگر منصفانه قضاوت کنیم این راه حل کمی احمقانه است! با اضافه کردن نسل‌های بیشتر به لیست حقایق، باز هم باید قواعدی مانند بالا اضافه کنیم.
+
+ما به اضافه کردن اینگونه قواعد نیاز نداریم. همانطور که خواهیم دید تعریف بازگشتی زیر تمام حالت‌های مورد نظر ما را پوشش خواهد داد.
+
+\begin{latin}
+\begin{lstlisting}
+descend(X,Y) :- child(X,Y).
+
+descend(X,Y) :- child(X,Z),
+                descend(Z,Y).
+\end{lstlisting}
+\end{latin}
+
+معنی مفهومی clause پایه این است که: اگر Y فرزند X‌ باشد، Y از اولاد X است. در مورد معنی مفهومی clause بازگشتی: اگر Z فرزند X باشد و Y از اولاد Z باشد، آنگاه Y از اولاد X است. هر دوی این تعاریف از نظر مفهومی درست هستند.
+
+حال از دید اجرایی، می‌توانیم درستی آنها را با یک مثال بررسی کنیم. باید ببینیم اگر از پرولوگ بخواهیم به پرسش زیر پاسخ دهد چه اتفاقی می‌افتد.
+
+\begin{latin}
+\begin{lstlisting}
+descend(martha,laura)
+\end{lstlisting}
+\end{latin}
+
+پرولوگ کار را با اولین قاعده آغاز می‌کند و متغیر X موجود در head قاعده را با martha و Y را با laura متحد می‌کند. با استفاده از این قاعده goal بعدی به شکل زیر خواهد بود:
+
+\begin{latin}
+\begin{lstlisting}
+child(martha,laura)
+\end{lstlisting}
+\end{latin}
+
+این goal ارضاپذیر نیست زیرا نه حقیقتی به این شکل در پایگاه وجود دارد و نه قاعده‌ای که بتوان این حقیقت را از آن نتیجه گرفت. بنابراین پرولوگ backtrack کرده و سعی می‌کند از قاعده دوم برای اثبات \متن‌لاتین{descend(martha,laura)} استفاده کند. پس لیست goal ها به شکل زیر درخواهد آمد:
+
+\begin{latin}
+\begin{lstlisting}
+child(martha,_633),
+descend(_633,laura).
+\end{lstlisting}
+\end{latin}
+
+پرولوگ اولین subgoal را در نظر گرفته و سعی می‌کند پاسخ آن‌را بیابد. در پایگاه، حقیقت \متن‌لاتین{child(martha,charlotte)} را می‌یابد و متغیر \متن‌لاتین{\_633} را با charlotte مقداردهی می‌کند. حالا subgoal اول ارضا شد. پرولوگ برای subgoal دوم باید اثبات کند:
+
+\begin{latin}
+\begin{lstlisting}
+descend(charlotte,laura)
+\end{lstlisting}
+\end{latin}
+
+که این فراخوانی بازگشتی محمول \متن‌لاتین{descend/2} است. همانند قبل، پرولوگ از قاعده اول شروع می‌کند. اما goal
+
+\begin{latin}
+\begin{lstlisting}
+child(charlotte,laura)
+\end{lstlisting}
+\end{latin}
+
+قابل ارضا نیست. با backtrack کردن، پرولوگ از قاعده دوم استفاده می‌کند که در نتیجه دو subgoal جدید خواهیم داشت:
+
+\begin{latin}
+\begin{lstlisting}
+child(charlotte,_1785),
+descend(_1785,laura).
+\end{lstlisting}
+\end{latin}
+
+اولین subgoal با حقیقت \متن‌لاتین{child(charlotte,caroline)} ارضا می‌شود پس متغیر \متن‌لاتین{\_1785} با caroline مقداردهی می‌شود. حالا پرولوگ باید اثبات کند که
+
+\begin{latin}
+\begin{lstlisting}
+descend(caroline,laura).
+\end{lstlisting}
+\end{latin}
+
+این دومین فراخوانی بازگشتی محمول \متن‌لاتین{descend/2} است. همانند قبل پرولوگ از اولین قاعده استفاده کرده و goal‌ جدید زیر را می‌سازد:
+
+\begin{latin}
+\begin{lstlisting}
+child(caroline,laura)
+\end{lstlisting}
+\end{latin}
+
+این‌بار پرولوگ موفق می‌شود چون حقیقت \متن‌لاتین{child(caroline,laura)} در پایگاه داده وجود دارد. پس حالا پرولوگ توانست \متن‌لاتین{descend(caroline,laura)} را اثبات کند که دومین فراخوانی \متن‌لاتین{descend/2} بود. این نشان می‌دهد که \متن‌لاتین{child(charlotte,laura)} (در اولین فراخوانی بازگشتی) هم درست است. بنابراین پرسش اصلی ما یعنی \متن‌لاتین{descend(martha,laura)} هم درست است.
+
+درخت جستجو برای پرسش \متن‌لاتین{descend(martha,laura)} در زیر نمایش داده شده‌است. با مطالعه آن سعی کنید فرآیند بازگشت را ببینید.
+
+\begin{latin}
+\begin{tikzpicture}[node distance=2cm,node/.style={ellipse,draw,align=center}]
+    \node[node] (1) {descend(martha,laura)};
+    \node[node] (2) [below left=2cm and -1cm of 1] {child(martha, laura)};
+    \node[node] (3) [below right=2cm and -1cm of 1] {child(martha,\_633),\\
+    descend(\_633,laura)};
+    \node[node] (4) [below of=3] {descend(charlotte,laura)};
+    \node[node] (5) [below left=2cm and -1cm of 4] {child(charlotte,laura)};
+    \node[node] (6) [below right=2cm and -1cm of 4] {child(charlotte,\_1785),\\
+    descend(\_1785,laura)};
+    \node[node] (7) [below of=6] {descend(caroline,laura)};
+    \node[node] (8) [below of=7] {child(caroline,laura)};
+    \path (1) edge node {} (2);
+    \path (1) edge node {} (3);
+    \path (3) edge node [left] {\_633 = charlotte} (4);
+    \path (4) edge node {} (5);
+    \path (4) edge node {} (6);
+    \path (6) edge node [left] {\_1785 = caroline} (7);
+    \path (7) edge node {} (8);
+\end{tikzpicture}
+\end{latin}
+
+مشخص است که حالا با افزایش تعداد نسل‌ها در این پایگاه داده، به مشکلی برخورد نخواهیم کرد و خواهیم توانست روابط فرزندی بین آنها را به درستی تشخیص دهیم. اگر می‌خواستیم اینکار را به وسیله روابط غیربازگشتی انجام دهیم نیاز به تعداد بی‌شماری از قواعد داشتیم که البته امکان‌پذیر نبود. اما با استفاده از یک رابطه بازگشتی توانستیم اینکار را در سه خط انجام دهیم.
+
+روابط بازگشتی در پرولوگ اهمیت خاصی دارند. آنها به ما امکان می‌دهند که حجم زیادی از داده را در شکل فشرده نشان دهیم.
+
+\subsection{مثال ۳}
+امروزه وقتی می‌خواهیم اعداد را بنویسیم از سیستم ده دهی استفاده می‌کنیم. همانطور که می‌دانید سیستم‌های دیگری برای نمایش اعداد وجود دارند. از جمله سیستم دودویی که معمولاً در سخت افزار مورد استفاده قرار می‌گیرد و یا سیستم نمایش بر مبنای ۶۴ که توسط بابلی‌ها بکار گرفته می‌شد.
+یک سیستم دیگر برای نمایش اعداد وجود دارد که بیشتر در منطق ریاضی استفاده می‌شود. در این سیستم تنها از چهار نماد استفاده می‌شود: \متن‌لاتین{0}، succ، و پرانتز باز   و پرانتز بسته. دو تعریف در این نحوه از نمایش وجود دارد:
+
+\begin{enumerate}
+\فقره \متن‌لاتین{0} یک عدد است
+\فقره اگر X یک عدد باشد، آنگاه \متن‌لاتین{succ(X)} هم یک عدد است.
+\end{enumerate}
+
+مشخص است که succ را می‌توان به عنوان مخفف successor در نظر گرفت. یعنی، \متن‌لاتین{succ(X)} نمایش دهنده عددی است که با اضافه کردن یک به عددی که X نمایش می‌دهد بدست می‌آید. پس این سیستم به سادگی می‌گوید \متن‌لاتین{0} یک عدد است و تمام اعداد را می‌توان با ردیف کردن succ در جلوی \متن‌لاتین{0} نمایش داد. هرچند این سیستم برای کار روزمره مناسب نیست ولی اثبات قضایا با استفاده از این سیستم برای ریاضیدانان ساده‌تر است. پایگاه داده زیر، ترجمه این تعریف به زبان پرولوگ است:
+
+\begin{latin}
+\begin{lstlisting}
+numeral(0).
+numeral(succ(X)) :- numeral(X).
+\end{lstlisting}
+\end{latin}
+
+پرسش زیر با پاسخ بله از طرف پرولوگ همراه خواهد بود.
+
+\begin{latin}
+\begin{lstlisting}
+numeral(succ(succ(succ(0)))).
+\end{lstlisting}
+\end{latin}
+
+می‌توانیم سوال جالب‌تری از پرولوگ بپرسیم. به نظر شما پرولوگ به پرسش زیر چه پاسخی می‌دهد؟
+
+\begin{latin}
+\begin{lstlisting}
+?- numeral(X).
+\end{lstlisting}
+\end{latin}
+
+معنی این سوال این است که «پرولوگ، چند عدد به من نشان بده». و روند زیر دیالوگی است که با پرولوگ خواهیم داشت:
+
+\begin{latin}
+\begin{lstlisting}
+X = 0 ;
+X = succ(0) ;
+X = succ(succ(0)) ;
+X = succ(succ(succ(0))) ;
+X = succ(succ(succ(succ(0)))) ;
+X = succ(succ(succ(succ(succ(0))))) ;
+X = succ(succ(succ(succ(succ(succ(0)))))) ;
+X = succ(succ(succ(succ(succ(succ(succ(0))))))) ;
+X = succ(succ(succ(succ(succ(succ(succ(succ(0)))))))) ;
+X = succ(succ(succ(succ(succ(succ(succ(succ(succ(0))))))))) ;
+X = succ(succ(succ(succ(succ(succ(succ(succ(succ(succ(...)))))))))) ;
+\end{lstlisting}
+\end{latin}
+
+پرولوگ درحال شمارش اعداد است. اما پرسش اینجاست که اینکار را چطور انجام می‌دهد. به سادگی با استفاده از تعریف بازگشتی و backtracking پرولوگ در حال ساختن اعداد است. سعی کنید با استفاده از trace روند ساختن این پاسخ‌ها را بررسی کنید. ساختن و بازگشت و اتحاد و جستجوی اثبات، ایده‌های اصلی برنامه‌نویسی prolog هستند. هرجایی که باید ساختارهای بازگشتی را ایجاد یا بررسی کنیم (همانند ساخت اعداد)، ترکیب این ایده‌ها هستند که پرولوگ را به عنوان یک ابزار قدرتمند در اختیارمان قرار می‌دهند. به عنوان مثال در فصل بعدی با لیست‌ها آشنا خواهیم شد که ساختارهای بازگشتی بسیار مهمی در پرولوگ هستند و خواهیم دید که پرولوگ یک زبان برای پردازش لیست‌هاست. در بسیاری از کاربردها از جمله پردازش زبان طبیعی، استفاده از ساختارهای بازگشتی مانند درخت‌ها و لیست‌ها متداول است. بنابراین دور از ذهن نیست که پرولوگ در این کاربردها به عنوان یک ابزار قدرتمند شناخته شده است.
+
+\subsection{مثال ۴}
+به عنوان آخرین مثال در این فصل، می‌خواهیم ببینیم که آیا می‌توانیم با استفاده از سیستم شمارش مثال قبل، اعمال ریاضی ساده را انجام دهیم. به عنوان اولین گام، بیایید عملگر جمع را تعریف کنیم. محمول \متن‌لاتین{add/3} را تعریف می‌کنیم که دو عدد را در آرگومان‌های اول و دوم دریافت می‌کند و نتیجه جمع آن‌ها را به عنوان آرگومان سوم برمی‌گرداند. یعنی این محمول باید به شکل زیر عمل کند:
+
+\begin{latin}
+\begin{lstlisting}
+?- add(succ(succ(0)),succ(succ(0)),succ(succ(succ(succ(0))))).
+yes
+?- add(succ(succ(0)),succ(0),Y).
+Y = succ(succ(succ(0)))
+\end{lstlisting}
+\end{latin}
+
+باید به دو نکته توجه داشت:
+
+\begin{enumerate}
+\فقره هرگاه آرگومان اول صفر باشد، باید آرگومان سوم را برابر آرگومان دوم قرار دهیم:
+\begin{latin}
+\begin{lstlisting}
+?- add(0,succ(succ(0)),Y).
+Y = succ(succ(0))
+?- add(0,0,Y).
+Y = 0
+\end{lstlisting}
+\end{latin}
+از این مورد برای clause پایه استفاده می‌کنیم.
+
+\فقره فرض کنید می‌خواهیم دو عدد X و Y را با هم جمع کنیم و X صفر نیست. اگر \متن‌لاتین{X'} را در نظر بگیریم که یک succ کمتر از X‌ دارد و نتیجه جمع (آنرا Z می‌نامیم) \متن‌لاتین{X'} و Y را بدانیم، حالا خیلی ساده می‌توانیم نتیجه جمع X و Y را بدست آوریم: کافی است یک succ به Z اضافه کنیم. این چیزی است که توسط تعریف بازگشتی می‌خواهیم آنرا بسازیم.
+\end{enumerate}
+
+تعریف محمول زیر دقیقاً آن چیزی است که در بالا شرح کردیم:
+
+\begin{latin}
+\begin{lstlisting}
+add(0,Y,Y).
+add(succ(X),Y,succ(Z)) :- add(X,Y,Z).
+\end{lstlisting}
+\end{latin}
+
+چه اتفاقی می‌افتد اگر این تعریف را به پرولوگ بدهیم و سپس بپرسیم:
+
+\begin{latin}
+\begin{lstlisting}
+add(succ(succ(succ(0))), succ(succ(0)), R)
+\end{lstlisting}
+\end{latin}
+
+در زیر روند اجرا و درخت جستجو نمایش داده شده‌اند. می‌خواهیم آنها را قدم به قدم بررسی کنیم.
+
+اولین آرگومان صفر نیست، پس تنها clause دوم add مورد استفاده قرار می‌گیرد که منجر به فراخوانی بازگشتی add می‌شود. خارجی‌ترین succ از اولین آرگومان پرسش اولیه برداشته می‌شود و نتیجه به عنوان اولین آرگومان پرسش بازگشتی قرار می‌گیرد. آرگومان دوم بدون تغییر در پرسش بازگشتی قرار می‌گیرد و به جای آرگومان سوم یک متغیر داخلی مثل \متن‌لاتین{\_G648} جانشین می‌شود. \متن‌لاتین{\_G648} هنوز مقداردهی نشده است ولی ارتباط آن با R مشخص است. در واقع متغیر R در پرسش اولیه با مقدار \متن‌لاتین{succ(\_G648)} مقداردهی شده‌است. پس تا اینجای کار R به یک ترم مرکب تبدیل شده‌است که یک آرگومان از نوع متغیر دارد.
+
+دو مرحله بعد شبیه به هم هستند. در هر مرحله، اولین آرگومان یک سطح کوچکتر می‌شود. و همچنین یک succ به R افزوده می‌شود ولی همچنان داخلی‌ترین متغیر این ترم مرکب بدون مقداردهی باقی می‌ماند. trace و شکل درخت جستجو این مطلب را بخوبی نشان می‌دهند.
+
+اینکار تا جایی ادامه می‌یابد که تمام succ ‌ها از اولین آرگومان حذف می‌شوند و به  clause پایه می‌رسیم. در اینجا سومین آرگومان با دومین آرگومان متحد شده و داخلی‌ترین متغیر ترم مرکب R مقداردهی می‌شود.
+
+trace مراحل اجرا به صورت زیر است:
+
+\begin{latin}
+\begin{lstlisting}
+Call: (6) add(succ(succ(succ(0))), succ(succ(0)), R)
+Call: (7) add(succ(succ(0)), succ(succ(0)), _G648)
+Call: (8) add(succ(0), succ(succ(0)), _G650)
+Call: (9) add(0, succ(succ(0)), _G652)
+Exit: (9) add(0, succ(succ(0)), succ(succ(0)))
+Exit: (8) add(succ(0), succ(succ(0)), succ(succ(succ(0))))
+Exit: (7) add(succ(succ(0)), succ(succ(0)), succ(succ(succ(succ(0)))))
+Exit: (6) add(succ(succ(succ(0))), succ(succ(0)), succ(succ(succ(succ(succ(0)))
+\end{lstlisting}
+\end{latin}
+
+این هم درخت جستجو برای مثال بالا.
+
+\begin{latin}
+\begin{tikzpicture}[node distance=2cm,node/.style={ellipse,draw,align=center}]
+    \node[node] (1) {add(succ(succ(succ(0))), succ(succ(0)), R)};
+    \node[node] (2) [below of=1] {add(succ(succ(0)), succ(succ(0)), \_G648)};
+    \node[node] (3) [below of=2] {add(succ(0), succ(succ(0)), \_G650)};
+    \node[node] (4) [below of=3] {add(0, succ(succ(0)), \_G652)};
+    \node[node] (5) [below of=4] {};
+    \path (1) edge node [left] {R = succ(\_G648)} (2);
+    \path (2) edge node [left] {\_G648 = succ(\_G650)} (3);
+    \path (3) edge node [left] {\_G650 = succ(\_G652)} (4);
+    \path (4) edge node [left] {\_G652 = succ(succ(0))} (5);
+\end{tikzpicture}
+\end{latin}
+
+\section{ترتیب clause ها و goal ها و خاتمه اجرا}
+پرولوگ اولین تلاش موفق برای ایجاد یک زبان برنامه‌نویسی منطقی است. دید اصلی در برنامه نویسی منطقی این است که: کار برنامه نویس باید تنها تعریف مسئله باشد. برنامه نویس باید (با استفاده از زبان منطقی) مسئله خود (پایگاه داده) را بنویسد و وضعیت موجود را شرح دهد. برنامه نویس نباید به کامپیوتر بگوید چطور مسئله را حل کند. برای دریافت اطلاعات، او باید از سیستم سوال بپرسد. وظیفه پاسخگویی و نحوه رسیدن به آن بر عهده سیستم است.
+
+خوب، این دید ما به برنامه نویسی منطقی است و مشخص است که پرولوگ گام‌هایی در این جهت برداشته است. ولی همانطور که در فصل اول به آن اشاره شد، پرولوگ یک زبان برنامه‌نویسی منطقی کامل نیست. اگر شما تنها به معنی مفهومی یا declarative برنامه فکر کنید، به دردسر خواهید افتاد. همانطور که دیدیم پرولوگ یک روند مشخص برای پاسخگویی به پرسش‌ها دارد: پایگاه داده را از بالا به پایین و هر clause را از چپ به راست می‌خواند و از backtracking برای خروج از یک وضعیت بد استفاده می‌کند. این نحوه اجرا بر پاسخگویی به پرسش‌ها تأثیر بسزایی دارد. قبلاً تأثیر تفاوت بین نگاه اجرایی و نگاه مفهومی به برنامه را دیده‌ایم (\متن‌لاتین{p :- p})، و اکنون خواهیم دید که به آسانی می‌توان دو پایگاه داده تعریف کرد که از نظر مفهومی یکسان هستند ولی از نظر اجرایی بسیار متفاوت عمل می‌کنند.
+
+پایگاه داده رابطه اولادی را به خاطر بیاورید. نام این پایگاه را \متن‌لاتین{descend1.pl} می گذاریم:
+
+\begin{latin}
+\begin{lstlisting}
+child(martha,charlotte).
+child(charlotte,caroline).
+child(caroline,laura).
+child(laura,rose).
+
+descend(X,Y) :- child(X,Y).
+descend(X,Y) :- child(X,Z),
+                descend(Z,Y).
+\end{lstlisting}
+\end{latin}
+
+دو تغییر در این پایگاه ایجاد کرده و نام آن را \متن‌لاتین{descend2.pl} می‌گذاریم:
+
+\begin{latin}
+\begin{lstlisting}
+child(martha,charlotte).
+child(charlotte,caroline).
+child(caroline,laura).
+child(laura,rose).
+descend(X,Y) :- descend(Z,Y),
+                child(X,Z).
+descend(X,Y) :- child(X,Y).
+\end{lstlisting}
+\end{latin}
+
+از نگاه مفهومی، کار خاصی انجام نداده‌ایم. تنها ترتیب دو قاعده را تغییر دادیم و ترتیب goal ها در قاعده بازگشتی را عوض کردیم. اینکار بر روی معنی منطقی آنها هیچ تأثیری ندارد.
+
+اما از دید اجرایی این دو پایگاه معانی کاملاً  متفاوتی دارند. برای مثال اگر پرسش زیر را مطرح کنیم:
+
+\begin{latin}
+\begin{lstlisting}
+descend(martha,rose).
+\end{lstlisting}
+\end{latin}
+
+با استفاده از پایگاه داده \متن‌لاتین{descend1.pl} همانطور که قبلاً دیدیم پاسخ صحیح YES دریافت خواهیم کرد.
+اما اگر از پایگاه داده \متن‌لاتین{descend2.pl} استفاده کنیم، با یک پیغام خطا ناشی از پر شدن stack و یا چیزی شبیه این مواجه می‌شویم. پرولوگ در یک حلقه قرار می‌گیرد. زیرا برای ارضا \متن‌لاتین{descend(martha,rose).}  پرولوگ از اولین قاعده استفاده می‌کند. بنابراین goal به شکل زیر خواهد بود:
+
+\begin{latin}
+\begin{lstlisting}
+descend(_G325,rose)
+\end{lstlisting}
+\end{latin}
+
+برای ارضا این goal جدید، پرولوگ باید دوباره از قاعده اول استفاده کند. که این خود باعث ایجاد یک goal جدید به شکل \متن‌لاتین{descend(\_G326,rose)} می‌شود و این روند ادامه می‌یابد.
+
+به عنوان مثالی دیگر، پایگاه داده زیر را که \متن‌لاتین{numerical1.pl} نامگذاری می‌کنیم به یاد آورید:
+
+\begin{latin}
+\begin{lstlisting}
+numeral(0).
+numeral(succ(X)) :- numeral(X).
+\end{lstlisting}
+\end{latin}
+
+حالا تنها ترتیب دو قاعده را تغییر می‌دهیم. نام پایگاه جدید را \متن‌لاتین{numerical2.pl} می‌گذاریم.
+
+\begin{latin}
+\begin{lstlisting}
+numeral(succ(X)) :- numeral(X).
+numeral(0).
+\end{lstlisting}
+\end{latin}
+
+واضح است که معنی منطقی یا مفهومی این دو پایگاه‌داده تفاوتی ندارد. اما عملکرد آن‌ها چطور؟
+
+اگر پرسش ما به طور خاص در مورد اعداد باشد، پایگاه داده \متن‌لاتین{numerical2.pl} پاسخ درست می‌دهد. مثلاً اگر بپرسیم:
+
+\begin{latin}
+\begin{lstlisting}
+?- numeral(succ(succ(succ(0)))).
+\end{lstlisting}
+\end{latin}
+
+پاسخ YES دریافت می‌کنیم که درست است. اما اگر سعی کنیم اعداد را بسازیم، با مشکل مواجه می‌شویم:
+
+\begin{latin}
+\begin{lstlisting}
+?- numeral(X).
+\end{lstlisting}
+\end{latin}
+
+برنامه متوقف نخواهد شد. سعی کنید که دقیقاً متوجه چرایی این مسئله شوید.
+
+از آنجایی که معانی مفهومی و اجرایی برنامه‌های پرولوگ با هم تفاوت دارند، باید به هر دوی آن‌ها در زمان نوشتن برنامه توجه داشته باشید. معمولاً اینگونه است که ایده اصلی نحوه تعریف مسئله را با تفکر در مورد مفهوم بدست خواهید آورد. برای کامل کردن برنامه باید به این موضوع فکر کنید که چطور پرولوگ برنامه را اجرا می‌کند و به پرسش‌ها پاسخ می‌دهد. آیا ترتیب قواعد درست است؟ آیا برنامه به درستی متوقف می‌شود؟ این نحوه تفکر برای نوشتن برنامه‌های پرولوگ اهمیت زیادی دارد.
+
+\clearpage
+
+\section{تمرین‌ها}
+\begin{exercise}
+عروسک‌های چوبی روسی، عروسک‌هایی هستند که به ترتیب اندازه داخل هم جای می‌گیرند. شمایی از این عروسک‌ها در شکل نشان داده شده است.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{figures/output.pdf}
+\label{fig:dataset-size-degree}
+\end{figure}
+
+محمول \متن‌لاتین{in/2} را طوری تعریف کنید که به ما بگوید کدام عروسک داخل کدام یک قرار می‌گیرد. مثلاً اگر بپرسیم \متن‌لاتین{in(katarina,natasha)} باید پاسخ مثبت باشد ولی برای \متن‌لاتین{in(olga, katarina)} باید پاسخ منفی دریافت کنیم.
+\end{exercise}
+
+\begin{exercise}
+محمول \متن‌لاتین{greater\_than/2} را طوری تعریف کنید که دو عدد با سیستم تعریف شده در این فصل دریافت کند و بررسی کند که آیا آرگومان اول از آرگومان دوم بزرگتر است یا خیر. به عنوان مثال:
+\begin{latin}
+\begin{lstlisting}
+?- greater_than(succ(succ(succ(0))),succ(0)).
+yes
+?- greater_than(succ(succ(0)),succ(succ(succ(0)))).
+no
+\end{lstlisting}
+\end{latin}
+\end{exercise}
+
+\begin{exercise}
+پایگاه داده زیر را در نظر بگیرید:
+
+\begin{latin}
+\begin{lstlisting}
+directTrain(forbach,saarbruecken).
+directTrain(freyming,forbach).
+directTrain(fahlquemont,stAvold).
+directTrain(stAvold,forbach).
+directTrain(saarbruecken,dudweiler).
+directTrain(metz,fahlquemont).
+directTrain(nancy,metz).
+\end{lstlisting}
+\end{latin}
+
+این پایگاه نشان‌دهنده شهرهایی است که بین آن‌ها قطار مستقیم وجود دارد. اما می‌توان با استفاده از چند قطار بین دو شهر که قطار مستقیم ندارند مسافرت نمود. محمول \متن‌لاتین{travelBetween/2} را طوری تعریف کنید که اگر بتوان بین دو شهر داده شده مسافرت نمود پاسخ مثبت بدهد. مثلاً اگر از برنامه بپرسیم:
+
+\begin{latin}
+\begin{lstlisting}
+travelBetween(nancy,saarbruecken).
+\end{lstlisting}
+\end{latin}
+
+باید پاسخ مثبت بگیریم. مشخص است که اگر از شهر A بتوانیم به شهر B مسافرت کنیم، می‌توانیم از شهر B نیز به شهر A برویم. پس برنامه شما باید به پرسش زیر هم پاسخ مثبت بدهد:
+
+\begin{latin}
+\begin{lstlisting}
+travelBetween(saarbruecken,nancy).
+\end{lstlisting}
+\end{latin}
+
+آیا می‌توانید مشکلاتی که ممکن است به آن برخورد کنید حدس بزنید؟
+\end{exercise}
+
+\section{تمرین عملی}
+از آنجایی که برنامه نویسی بازگشتی در پرولوگ بسیار مهم است باید بتوانید به خوبی با آن کنار بیایید. باید نحوه مقداردهی متغیرها در روند اجرای محمول‌های بازگشتی را خوب درک کنید. و همچنین متوجه باشید که چرا ترتیب قواعد و همینطور goal ها در قواعد مهم است و به چه صورت ترتیب درست را انتخاب کنید. در اینجا می‌خواهیم کمی با دستور trace کار کنیم و روند اجرای برنامه‌های بازگشتی را توسط این دستور ببینیم.
+
+\begin{enumerate}
+\فقره برنامه \متن‌لاتین{descend1.pl} را بارگزاری کنید و trace را روشن کنید. پرسش \متن‌لاتین{descend(martha,laura).} را وارد کنید. همزمان با پیشروی در اجرا، سعی کنید چیزهایی که روی صفحه می‌بینید با متن درس -جایی که این پرسش را بررسی کردیم- مطابقت دهید.
+
+\فقره درحالی که هنوز trace روشن است، پرسش \متن‌لاتین{descend(martha,rose).} را مطرح کنید. مراحل اجرا را بشمارید. یعنی تعداد enter هایی که می‌زنید را بشمارید. حالا trace را خاموش کنید و پرسش \متن‌لاتین{descend(X,Y)} را بپرسید. چند پاسخ مشاهده می‌کنید؟
+
+\فقره برنامه \متن‌لاتین{descend2.pl} را بارگزاری کنید. همانطور که به خاطر دارید این برنامه تغییراتی در ترتیب قواعد و goal ها داشت. با استفاده از trace سعی کنید روند پاسخ به پرسش \متن‌لاتین{descend(martha,laura)} را دنبال کنید.
+
+\فقره دو نوع دیگر از تغییرات روی پایگاه \متن‌لاتین{descend1.pl} امکان پذیر است:
+\begin{latin}
+\begin{lstlisting}
+descend(X,Y) :- child(X,Y).
+descend(X,Y) :- descend(Z,Y),
+                child(X,Z).
+\end{lstlisting}
+\end{latin}
+و
+\begin{latin}
+\begin{lstlisting}
+descend(X,Y) :- child(X,Z),
+                descend(Z,Y).
+descend(X,Y) :- child(X,Y).
+\end{lstlisting}
+\end{latin}
+
+ بررسی کنید که این دو پایگاه با \متن‌لاتین{descend1.pl} چه تفاوتی دارند. آیا این دو پایگاه می‌توانند پرسش \متن‌لاتین{descend(martha,rose)} را پاسخ دهند؟ آیا می‌توانند به پرسش‌هایی که شامل متغیر هستند پاسخ دهند؟ آیا سرعت اجرای آنها با \متن‌لاتین{descend1.pl} متفاوت است؟
+
+\فقره برنامه \متن‌لاتین{numeral1.pl} را بارگزاری کنید. با استفاده از دستور trace سعی کنید پرسش‌هایی که در متن این فصل مطرح شد را بررسی کنید.
+\end{enumerate}
+
+در سه فصل گذشته، تمام مفاهیم پایه که برای فصول بعد نیاز داریم را فرا گرفتیم. یادگیری این مفاهیم تنها از طریق تمرین و نوشتن برنامه میسر است. سعی کنید برنامه‌های زیر را به طور کامل بنویسید.
+
+\begin{enumerate}
+\فقره پایگاه داده زیر از اطلاعات سفر را در اختیار داریم.
+
+\begin{latin}
+\begin{lstlisting}
+byCar(auckland,hamilton).
+byCar(hamilton,raglan).
+byCar(valmont,saarbruecken).
+byCar(valmont,metz).
+byTrain(metz,frankfurt).
+byTrain(saarbruecken,frankfurt).
+byTrain(metz,paris).
+byTrain(saarbruecken,paris).
+byPlane(frankfurt,bangkok).
+byPlane(frankfurt,singapore).
+byPlane(paris,losAngeles).
+byPlane(bangkok,auckland).
+byPlane(losAngeles,auckland).
+\end{lstlisting}
+\end{latin}
+
+محمول \متن‌لاتین{travel/2} را طوری تعریف کنید و بنویسید که امکان سفر بین دو شهر را با استفاده از زنجیره‌ای از اتومبیل، قطار و هواپیما مشخص کند. مثلاً برنامه باید به پرسش \متن‌لاتین{travel(valmont,raglan)} پاسخ مثبت دهد.
+
+\فقره با استفاده از \متن‌لاتین{travel/2} می‌توانیم مطمئن شویم که بین دو شهر امکان سفر وجود دارد. اما چیزی که از آن مهمتر است این است که چگونه و از چه مسیری این سفر میسر است. محمول \متن‌لاتین{travel/3} را طوری تعریف و پیاده‌سازی کنید که نحوه مسافرت بین دو شهر را بازگو کند. برنامه باید به پرسش \متن‌لاتین{travel(valmont,paris,go(valmont,metz,go(metz,paris)))} پاسخ مثبت دهد و در پرسش \متن‌لاتین{travel(valmont,losAngeles,X)} متغیر X را به صورت \متن‌لاتین{X = go(valmont,metz,go(metz,paris,go(paris,losAngeles)))} مقداردهی کند.
+
+\فقره  محمول \متن‌لاتین{travel/3} را طوری گسترش دهید که نه‌تنها اسم شهرهای موجود در مسیر را بگوید بلکه وسیله مورد استفاده برای مسافرت بین دو شهر را هم در پاسخ جای دهد.
+\end{enumerate}
